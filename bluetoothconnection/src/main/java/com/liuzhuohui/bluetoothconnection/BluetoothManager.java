@@ -2,8 +2,12 @@ package com.liuzhuohui.bluetoothconnection;
 
 import android.bluetooth.BluetoothSocket;
 
+import com.liuzhuohui.data.BluetoothData;
+import com.liuzhuohui.data.BluetoothStatusData;
+
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import com.liuzhuohui.data.BluetoothData;
 
 // 蓝牙管理器
 public interface BluetoothManager {

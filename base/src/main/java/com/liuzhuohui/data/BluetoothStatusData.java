@@ -1,4 +1,4 @@
-package com.liuzhuohui.bluetoothconnection;
+package com.liuzhuohui.data;
 
 import android.bluetooth.BluetoothDevice;
 

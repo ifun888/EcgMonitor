@@ -2,6 +2,7 @@ package com.liuzhuohui.bluetoothconnection;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,9 +10,13 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 import com.liuzhuohui.base.Config;
+import com.liuzhuohui.data.BluetoothData;
+import com.liuzhuohui.data.BluetoothStatusData;
 import com.yanzhenjie.permission.AndPermission;
 
+import java.io.IOException;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,6 +40,7 @@ public class BluetoothManagerImpl implements BluetoothManager {
     private static BroadcastReceiver btBoardcastReceiver;
     private static IntentFilter btTransmitFilter;
     private static BroadcastReceiver btTransmitBoardcastReceiver;
+    private static BluetoothSocket socket;
 
 
     static {
@@ -164,6 +170,41 @@ public class BluetoothManagerImpl implements BluetoothManager {
         btStatusInit();
         openAndScan();
 
+        BluetoothDevice device =bluetoothAdapter.getRemoteDevice(mac);
+        if(null == device){
+            return null;
+        }
+        bluetoothAdapter.cancelDiscovery();
+
+//        需要申报异常
+        try {
+            socket = device.createRfcommSocketToServiceRecord(UUID.fromString(Config.BLUETOOTH_UUID));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Observable<BluetoothData> connectObservable = Observable
+                .create(new ObservableOnSubscribe<BluetoothData>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<BluetoothData> emitter) throws Exception {
+                       try {
+                           socket.connect();
+                       }catch (IOException e){
+                           Log.i(TAG,"socket连接失败！！！正在关闭Socket");
+                           e.printStackTrace();
+
+                           try {
+                                socket.close();
+                           }catch (IOException e1){
+                               Log.i(TAG,"socket关闭失败！！！");
+                               e1.printStackTrace();
+                           }
+                       }
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
         return null;
     }
 
@@ -196,7 +237,7 @@ public class BluetoothManagerImpl implements BluetoothManager {
     }
 
 
-    
+
 
     @Override
     public int writeToBluetooth(byte[] writeBuffer) {

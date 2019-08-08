@@ -1,4 +1,4 @@
-package com.liuzhuohui.bluetoothconnection;
+package com.liuzhuohui.data;
 
 public class BluetoothData {
     public static volatile boolean connected;

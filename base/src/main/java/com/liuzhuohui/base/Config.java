@@ -11,4 +11,7 @@ public class Config {
             Manifest.permission.ACCESS_FINE_LOCATION,//6.0以上权限
             Manifest.permission.ACCESS_COARSE_LOCATION,//6.0以上权限
     };
+
+
+    public static final String BLUETOOTH_UUID = "00001101-0000-1000-8000-00805F9B34FB";
 }

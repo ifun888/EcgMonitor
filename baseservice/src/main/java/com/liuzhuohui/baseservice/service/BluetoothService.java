@@ -1,13 +1,13 @@
 package com.liuzhuohui.baseservice.service;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.liuzhuohui.baseservice.dagger.BtComponents;
 import com.liuzhuohui.baseservice.dagger.DaggerBtComponents;
 import com.liuzhuohui.bluetoothconnection.BluetoothManager;
+import com.liuzhuohui.data.BluetoothData;
 
-import java.lang.annotation.Target;
+import io.reactivex.Observable;
 
 public class BluetoothService {
 
@@ -32,5 +32,9 @@ public class BluetoothService {
     public void scan(){
 
         bluetoothManager.connectByMac(" ");
+    }
+
+    public Observable<BluetoothData> connect(){
+        return bluetoothManager.connectByMac("4C:49:E3:57:51:63");
     }
 }
